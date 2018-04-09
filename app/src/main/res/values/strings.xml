@@ -5,4 +5,6 @@
     <string name="project_name">Project Name</string>
     <string name="view_user_s_repos">View User\'s Repos</string>
     <string name="view">View</string>
+    <string name="searchTitle">Search Result</string>
+    <string name="title">Find Repo on GitHub</string>
 </resources>
