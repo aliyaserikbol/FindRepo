@@ -11,48 +11,58 @@ import android.support.test.runner.AndroidJUnit4
 import android.support.v7.widget.Toolbar
 import android.view.View
 import android.widget.TextView
+import com.example.aliyaserikbol.findrepo.Screens.BaseScreen
+import com.example.aliyaserikbol.findrepo.Screens.SearchScreen
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.Description
 import org.hamcrest.Matcher
+import org.junit.Assert
 import org.junit.Assert.*
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class MainActivityTest {
+class MainActivityTest() : BaseScreen() {
     @Rule @JvmField
     var activityRule = ActivityTestRule<MainActivity>(
             MainActivity::class.java)
 
     @Test
-    fun search() {
-        onView(withId(R.id.searchEditText))
-                .check(matches(withText("")))
+    fun matchesLink(){
+        val searchScreen = SearchScreen()
+        val textSearchForRepo = "Kotlin"
+        searchScreen.typeTextInSearchForReposField(textSearchForRepo)
+        val searchResultScreen = SearchScreen().tapOnSearchButton()
+        val gitHubScreen = searchResultScreen.tapOnARepoInSearchList()
+        val actualUrl = gitHubScreen.actualUrl
 
-        onView(withId(R.id.searchButton))
-                .perform(click())
-        }
+        val expectedUrl = "https://github.com/JetBrains/kotlin"
+
+        Assert.assertEquals("$actualUrl is equal $expectedUrl", expectedUrl, actualUrl)
+    }
 
     @Test
-    fun toolbarTitle() {
-        val title = InstrumentationRegistry.getTargetContext().getString(R.string.title)
-        onView(isAssignableFrom(Toolbar::class.java))
-                .check(matches(withToolbarTitle(title)))
-        }
-    private fun withToolbarTitle(expectedTitle: CharSequence): Matcher<View> {
-        return object : BoundedMatcher<View, Toolbar>(Toolbar::class.java) {
-            override fun describeTo(description: Description?) {
-                description?.appendText("with toolbar title: " + expectedTitle)
-            }
+    fun verifyEmptyViewUsersReposFieldHasErrorMessage(){
+        val searchScreen = SearchScreen()
+        val emptyText = ""
+        searchScreen.typeTextInViewUsersReposField(emptyText)
+        val searchResultScreen = searchScreen.tapOnViewButton()
+        searchScreen.verifyErrorMessageIsExist()
+    }
 
-            override fun matchesSafely(item: Toolbar?): Boolean {
-                return expectedTitle == item?.title
-            }
-
-        }
+    @Test
+    fun verifyBackWorksOnEachScreen(){
+        val searchScreen = SearchScreen()
+        val textSearchForRepo = "Kotlin"
+        searchScreen.typeTextInSearchForReposField(textSearchForRepo)
+        val searchResultScreen = SearchScreen().tapOnSearchButton()
+        val gitHubScreen = searchResultScreen.tapOnARepoInSearchList()
+        gitHubScreen.back()
+        searchResultScreen.back()
     }
 }
+
 
 
 
