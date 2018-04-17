@@ -1,6 +1,7 @@
 package com.example.aliyaserikbol.findrepo.Screens
 
 import android.support.test.uiautomator.UiSelector
+import com.example.aliyaserikbol.findrepo.globalTimeOut
 import org.junit.Assert
 
 class GitHubScreen: BaseScreen() {
@@ -10,7 +11,7 @@ class GitHubScreen: BaseScreen() {
     val actualUrl get() = url.text
 
     init {
-        Assert.assertTrue("GitHub page isn’t open", url.waitForExists(5000))
+        Assert.assertTrue("GitHub page isn’t open", url.waitForExists(globalTimeOut))
     }
 
     fun back(): SearchResultScreen{
